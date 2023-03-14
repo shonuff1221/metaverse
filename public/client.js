@@ -73,9 +73,10 @@ window.addEventListener('load', function() {
 		
 	});//END_SOCKET.ON
 	
-	socket.on('UPDATE_PLAYER_ANIMATOR', function(id,animation) {
+		socket.on('UPDATE_PLAYER_ANIMATOR', function(id,key,value,type) {
 	
-	    var currentUserAtr = id+':'+animation;
+	     var currentUserAtr = id+':'+key+':'+value+':'+type;
+		
 		
 		if(window.unityInstance!=null)
 		{
@@ -85,6 +86,7 @@ window.addEventListener('load', function() {
 		}
 		
 	});//END_SOCKET.ON
+	
 	
 	socket.on('UPDATE_USER_LIST', function(id,name,publicAddress) {
 	

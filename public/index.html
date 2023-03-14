@@ -4,7 +4,7 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-  <title>MetaverseSample</title>
+  <title>WebGL Meta Multiplayer Kit 2023</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
     <link rel="stylesheet" href="TemplateData/style.css">
 
@@ -20,11 +20,7 @@
         </div>
       </div>
       <div id="unity-warning"> </div>
-      <div id="unity-footer">
-        <div id="unity-webgl-logo"></div>
-        <div id="unity-fullscreen-button"></div>
-        <div id="unity-build-title">Metaverse Sample</div>
-      </div>
+      
     </div>
 		<script src="/socket.io/socket.io.js"></script>
 	<script src="client.js"></script>
@@ -71,8 +67,8 @@
            frameworkUrl: buildUrl + "/public.framework.js",
            codeUrl: buildUrl + "/public.wasm",
            streamingAssetsUrl: "StreamingAssets",
-           companyName: "Rio3DStudios",
-           productName: "MetaverseSample",
+           companyName: "DefaultCompany",
+           productName: "WebGL Meta Multiplayer Kit 2023",
            productVersion: "0.1",
 	       showBanner: unityShowBanner,
 	  
@@ -93,8 +89,8 @@
         config.devicePixelRatio = 1;
         unityShowBanner('WebGL builds are not supported on mobile devices.');
       } else {
-        canvas.style.width = "960px";
-        canvas.style.height = "600px";
+         canvas.style.width = "100vw";
+        canvas.style.height = "100vh";
       }
       loadingBar.style.display = "block";
 
@@ -110,7 +106,7 @@
             unityInstance.SetFullscreen(1);
           };
         }).catch((message) => {
-          alert(message);
+         // alert(message);
         });
       };
       document.body.appendChild(script);

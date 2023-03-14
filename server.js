@@ -76,7 +76,7 @@ io.on('connection', function(socket){
 				   };//new user  in clients list
 					
 		console.log('[INFO] player '+currentUser.name+': logged!');
-		console.log('[INFO] currentUser.position '+currentUser.position);	
+		
 
 		 //add currentUser in clients list
 		 clients.push(currentUser);
@@ -87,6 +87,7 @@ io.on('connection', function(socket){
 		 sockets[currentUser.id] = socket;//add curent user socket
 		 
 		 console.log('[INFO] Total players: ' + clients.length);
+		 
 		 
 		 /*********************************************************************************************/		
 		
@@ -136,7 +137,8 @@ io.on('connection', function(socket){
        }
 	});//END_SOCKET_ON
 	
-		//create a callback fuction to listening EmitAnimation() method in NetworkMannager.cs unity script
+		
+//create a callback fuction to listening EmitAnimation() method in NetworkMannager.cs unity script
 	socket.on('ANIMATION', function (_data)
 	{
 	  var data = JSON.parse(_data);	
@@ -148,13 +150,12 @@ io.on('connection', function(socket){
 	   
 	    //send to the client.js script
 	   //updates the animation of the player for the other game clients
-       socket.broadcast.emit('UPDATE_PLAYER_ANIMATOR', currentUser.id,data.animation);
+       socket.broadcast.emit('UPDATE_PLAYER_ANIMATOR', currentUser.id,data.key,data.value,data.type);
 	
 	   
       }//END_IF
 	  
 	});//END_SOCKET_ON
-	
 	
 	
 //create a callback fuction to listening EmitGetBestKillers() method in NetworkMannager.cs unity script
@@ -395,7 +396,7 @@ socket.on('GET_USERS_LIST',function(pack){
       {
 		//  console.log("current user: "+currentUser.name);
 		  
-		 //  console.log("u.name: "+u.name);
+		// console.log("u.name: "+u.name);
      
     
         //sockets[u.id].emit('UPDATE_VOICE',currentUser.id,newData);
