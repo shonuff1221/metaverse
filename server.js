@@ -8,6 +8,16 @@ var http     = require('http').Server(app);// create a http web server using the
 var io       = require('socket.io')(http);// import socketio communication module
 
 
+
+const cors=require("cors");
+const corsOptions ={
+   origin:'*', 
+   credentials:true,            //access-control-allow-credentials:true
+   optionSuccessStatus:200
+}
+
+app.use(cors(corsOptions)) // Use this after the variable declaration
+
 app.use("/public/TemplateData",express.static(__dirname + "/public/TemplateData"));
 app.use("/public/Build",express.static(__dirname + "/public/Build"));
 app.use(express.static(__dirname+'/public'));
