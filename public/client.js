@@ -60,6 +60,112 @@ window.addEventListener('load', function() {
 		
 	});//END_SOCKET.ON
 	
+	socket.on('SPAWN_VEHICLE', function(id,name,model,posX,posY,posZ,currentState,myClientId) {
+	
+	    var current_vehicle = id+':'+name+':'+model+':'+posX+':'+posY+':'+posZ+':'+currentState+':'+myClientId;
+		
+		if(window.unityInstance!=null)
+		{
+	   
+		  window.unityInstance.SendMessage ('NetworkManager', 'OnSpawnVehicle', current_vehicle);
+		
+		}
+		
+	});//END_SOCKET.ON
+	
+	
+	socket.on('EMIT_VEHICLE_POS_AND_ROT', function(id,posX,posY,posZ,rotation,spherePosX,spherePosY,spherePosZ) {
+	
+	    var current_vehicle = id+':'+posX+':'+posY+':'+posZ+':'+rotation+':'+spherePosX+':'+spherePosY+':'+spherePosZ;
+		
+		if(window.unityInstance!=null)
+		{
+	   
+		  window.unityInstance.SendMessage ('NetworkManager', 'OnUpdateVehiclePosAndRot', current_vehicle);
+		
+		}
+		
+	});//END_SOCKET.ON
+	socket.on('UPDATE_VEHICLE_STATE', function( myClientId,id,currentState) {
+	
+	    var current_vehicle = myClientId+':'+id+':'+currentState;
+		
+		if(window.unityInstance!=null)
+		{
+	   
+		  window.unityInstance.SendMessage ('NetworkManager', 'OnUpdateVehicleState', current_vehicle);
+		
+		}
+		
+	});//END_SOCKET.ON
+	
+	socket.on('UPDATE_VEHICLE_ACCELERATION', function( id,acceleration) {
+	
+	    var current_vehicle = id+':'+acceleration;
+		
+		if(window.unityInstance!=null)
+		{
+	   
+		  window.unityInstance.SendMessage ('NetworkManager', 'OnUpdateVehicleAcceleration', current_vehicle);
+		
+		}
+		
+	});//END_SOCKET.ON
+	
+	
+	socket.on('UPDATE_VEHICLE_ACCELERATION', function( id,acceleration) {
+	
+	    var current_vehicle = id+':'+acceleration;
+		
+		if(window.unityInstance!=null)
+		{
+	   
+		  window.unityInstance.SendMessage ('NetworkManager', 'OnUpdateVehicleAcceleration', current_vehicle);
+		
+		}
+		
+	});//END_SOCKET.ON
+	
+	socket.on('UPDATE_OFFSPIN', function( id,offSpin) {
+	
+	    var current_vehicle = id+':'+offSpin;
+		
+		if(window.unityInstance!=null)
+		{
+	   
+		  window.unityInstance.SendMessage ('NetworkManager', 'OnUpdateVehicleOffSpin', current_vehicle);
+		
+		}
+		
+	});//END_SOCKET.ON
+	
+	socket.on('UPDATE_FRONT_WHEELS_ROT', function( id,wheels_rot) {
+	
+	    var current_vehicle = id+':'+wheels_rot;
+		
+		if(window.unityInstance!=null)
+		{
+	   
+		  window.unityInstance.SendMessage ('NetworkManager', 'OnUpdateFrontWheelsRotation', current_vehicle);
+		
+		}
+		
+	});//END_SOCKET.ON
+	
+	socket.on('UPDATE_VEHICLE_INPUTS', function( id,h,v) {
+	
+	    var current_vehicle = id+':'+h+':'+v;
+		
+		if(window.unityInstance!=null)
+		{
+	   
+		  window.unityInstance.SendMessage ('NetworkManager', 'OnUpdateVehicleInputs', current_vehicle);
+		
+		}
+		
+	});//END_SOCKET.ON
+	
+	
 
 	
     socket.on('UPDATE_MOVE_AND_ROTATE', function(id,posX,posY,posZ,rotation) {

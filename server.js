@@ -1,12 +1,12 @@
 /*
 *@autor: Rio 3D Studios
-*@description:  java script server that works as master server of the Basic Example of WebGL Multiplayer Kit
+*@description:  java script server that works as master server of the metaverse from WebGL Multiplayer Kit
 */
 var express  = require('express');//import express NodeJS framework module
 var app      = express();// create an object of the express module
 var http     = require('http').Server(app);// create a http web server using the http library
 var io       = require('socket.io')(http);// import socketio communication module
-
+const { v4: uuidv4 } = require('uuid');
 
 
 const cors=require("cors");
@@ -25,6 +25,11 @@ app.use(express.static(__dirname+'/public'));
 var clients			= [];// to storage clients
 var clientLookup = {};// clients search engine
 var sockets = {};//// to storage sockets
+
+var vehicles = [];
+var vehicleLookup = {};
+
+
 
 function getDistance(x1, y1, x2, y2){
     let y = x2 - x1;
@@ -118,8 +123,16 @@ io.on('connection', function(socket){
 		 // spawn currentUser client on clients in broadcast
 		socket.broadcast.emit('SPAWN_PLAYER',currentUser.id,currentUser.name,currentUser.posX,currentUser.posY,currentUser.posZ,data.model);
 		
+		
+	
+		
+		 
+				 
+
+		
   
 	});//END_SOCKET_ON
+	
 	
 	
 	
@@ -166,6 +179,179 @@ io.on('connection', function(socket){
       }//END_IF
 	  
 	});//END_SOCKET_ON
+	
+	
+	socket.on('PICK_VEHICLE', function (_data)
+	{
+		
+		var data = JSON.parse(_data);	
+		
+		 //console.log("data id : "+data.id);
+		
+		 //spawn all connected clients for currentUser client 
+        vehicles.forEach( function(i) {
+		    if(i.id==data.id)
+			{ 
+		      i.currentState = "bussy";
+			  i.myClientId = currentUser.id;
+			  i.charModel = currentUser.model;
+		      //send to the client.js script
+			  socket.broadcast.emit('UPDATE_VEHICLE_STATE', currentUser.id,i.id,i.currentState);
+			  
+		    }//END_IF
+	   
+	     });//end_forEach
+	
+    });
+
+   socket.on('RELEASE_VEHICLE', function (_data)
+	{
+		
+		var data = JSON.parse(_data);	
+		
+		 //spawn all connected clients for currentUser client 
+        vehicles.forEach( function(i) {
+		    if(i.id==data.vehicleId)
+			{ 
+		      i.currentState = "available";
+			  i.myClientId = '';
+			  i.isLocalVehicle = false;
+		       //send to the client.js script
+			  socket.broadcast.emit('UPDATE_VEHICLE_STATE',  currentUser.id,i.id,i.currentState);
+			  
+		    }//END_IF
+	   
+	     });//end_forEach
+	
+    });
+	
+	
+		
+	//create a callback fuction to listening EmitMoveAndRotate() method in NetworkMannager.cs unity script
+	socket.on('UPDATE_VEHICLE_POS_AND_ROT', function (_data)
+	{
+	  var data = JSON.parse(_data);	
+	  
+	 
+	  
+	
+	  
+	   vehicles.forEach( function(i) {
+		    if(i.id==data.id)
+			{ 
+			  i.posX= data.posX;
+	          i.posY = data.posY;
+	          i.posZ = data.posZ;
+	          i.rotation = data.rotation;
+			  i.spherePosX= data.spherePosX;
+	          i.spherePosY = data.spherePosY;
+	          i.spherePosZ = data.spherePosZ;
+			  
+			
+			  
+			//  socket.broadcast.emit('EMIT_VEHICLE_POS_AND_ROT', i.id,i.posX,i.posY,i.posZ,i.rotation);
+			
+			  
+              clients.forEach(function(u) {
+
+              if(u.id!= currentUser.id)
+              {
+				   
+		        sockets[u.id].emit('EMIT_VEHICLE_POS_AND_ROT', i.id,i.posX,i.posY,i.posZ,i.rotation,i.spherePosX,i.spherePosY,i.spherePosZ);
+               }
+	  
+              });
+			  
+		    }//END_IF
+		});//end_forEach
+		
+	 
+	  
+	  
+	
+	});//END_SOCKET_ON
+	
+	 socket.on('ACCELERATION', function (_data)
+	{
+		
+		var data = JSON.parse(_data);	
+		
+		 //spawn all connected clients for currentUser client 
+        vehicles.forEach( function(i) {
+		    if(i.id==data.id)
+			{ 
+		      i.acceleration = data.acceleration;
+			  
+		       //send to the client.js script
+			  socket.broadcast.emit('UPDATE_VEHICLE_ACCELERATION',  i.id,i.acceleration);
+			  
+		    }//END_IF
+	   
+	     });//end_forEach
+	
+    });
+	
+	 socket.on('OFFSPIN', function (_data)
+	{
+		
+		var data = JSON.parse(_data);	
+		
+		 //spawn all connected clients for currentUser client 
+        vehicles.forEach( function(i) {
+		    if(i.id==data.id)
+			{ 
+		      i.offSpin = data.offSpin;
+			  
+		       //send to the client.js script
+			  socket.broadcast.emit('UPDATE_OFFSPIN',  i.id,i.offSpin);
+			  
+		    }//END_IF
+	   
+	     });//end_forEach
+	
+    });
+	
+	 socket.on('FRONT_WHEELS_ROT', function (_data)
+	{
+		
+		var data = JSON.parse(_data);	
+		
+		 //spawn all connected clients for currentUser client 
+        vehicles.forEach( function(i) {
+		    if(i.id==data.id)
+			{ 
+		      i.wheels_rot = data.wheels_rot;
+			  
+		       //send to the client.js script
+			  socket.broadcast.emit('UPDATE_FRONT_WHEELS_ROT',  i.id, i.wheels_rot);
+			  
+		    }//END_IF
+	   
+	     });//end_forEach
+	
+    });
+	
+	 socket.on('VEHICLE_INPUTS', function (_data)
+	{
+		
+		var data = JSON.parse(_data);	
+		
+		 //spawn all connected clients for currentUser client 
+        vehicles.forEach( function(i) {
+		    if(i.id==data.id)
+			{ 
+		      
+			  
+		       //send to the client.js script
+			  socket.broadcast.emit('UPDATE_VEHICLE_INPUTS',  i.id, data.h,data.v);
+			  
+		    }//END_IF
+	   
+	     });//end_forEach
+	
+    });
+
+	
 	
 	
 //create a callback fuction to listening EmitGetBestKillers() method in NetworkMannager.cs unity script
@@ -263,16 +449,7 @@ socket.on('GET_USERS_LIST',function(pack){
 	});//END_SOCKET_ON
 	
 	
-	socket.on('CONFIRM_TRANSACTION', function (_data)
-	{
-			
-	  var data = JSON.parse(_data);	
-	  
-	  sockets[data.idTo].emit('UPDATE_CONFIRM_TRANSACTION',data.amount);
-	
-     
-	});//END_SOCKET_ON
-	
+
 	
 	socket.on('MUTE_ALL_USERS', function ()
 	{
@@ -468,7 +645,89 @@ if(currentUser)
 		
 });//END_IO.ON
 
+function gameloop() {
+	
 
+	  //spawn all connected clients for currentUser client 
+         clients.forEach( function(u) {
+		    
+		
+		    //spawn all connected clients for currentUser client 
+         vehicles.forEach( function(i) {
+			 
+
+		
+		
+		     sockets[u.socketID].emit('SPAWN_VEHICLE',i.id,i.name,i.model,i.posX,i.posY,i.posZ,i.currentState,i.myClientId);
+		     
+		     //send to the client.js script
+			 sockets[u.socketID].emit('UPDATE_VEHICLE_STATE', i.myClientId,i.id,i.currentState);
+			  
+			  
+	   
+	     });//end_forEach
+		});//end_forEach
+		 
+		 
+		 
+}
+
+setInterval(gameloop, 1000);
+// Adicionando a propriedade posY no array vehicleTypes
+const vehicleTypes = [
+  { name: 'desert vehicle patrol', model: 0, posY: 0},
+  { name: 'explorer 4X4', model: 1, posY: 0 },
+  { name: 'semi truck', model: 2, posY: -0.1 },
+  { name: 'motorcycle', model: 3, posY: -0.1 },
+  { name: 'policeinterceptor', model: 4, posY: -0.1 }
+];
+
+function createVehicle(name, model, posX, posY, posZ) {
+  return {
+    id: uuidv4(),
+    name: name,
+    model: model,
+    charModel: model.toString(),
+    isLocalVehicle: false,
+    posX: posX.toString(),
+    posY: posY.toString(),
+    posZ: posZ.toString(),
+    spherePosX: '',
+    spherePosY: '',
+    spherePosZ: '',
+    defaultPosition: `${posX},${posY},${posZ}`,
+    rotation: '',
+    acceleration: '',
+    offSpin: '',
+    wheels_rot: '',
+    currentState: 'available',
+    myClientId: '',
+    bornPointID: 1
+  };
+}
+
+function generateRandomPosition(vehicleType) {
+  return {
+    x: (Math.random() * 100 - 50).toFixed(2), // Random X position between -50 and 50
+    y: vehicleType.posY, // Custom Y position based on vehicle type
+    z: (Math.random() * 100 - 50).toFixed(2) // Random Z position between -50 and 50
+  };
+}
+
+
+
+// Criar múltiplos veículos com repetições
+for (let i = 0; i < 10; i++) { // Ajustar o número de veículos conforme necessário
+  const randomType = vehicleTypes[Math.floor(Math.random() * vehicleTypes.length)];
+  const randomPos = generateRandomPosition(randomType);
+  
+  const vehicle = createVehicle(randomType.name, randomType.model, randomPos.x, randomPos.y, randomPos.z);
+  vehicles.push(vehicle);
+  vehicleLookup[vehicle.id] = vehicle;
+}
+
+
+console.log('Vehicles:', vehicles);
 
 http.listen(process.env.PORT ||3000, function(){
 	console.log('listening on *:3000');
