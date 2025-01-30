@@ -362,7 +362,7 @@ socket.on('GET_USERS_LIST',function(pack){
        //spawn all connected clients for currentUser client 
         clients.forEach( function(i) {
 		    if(i.id!=currentUser.id)
-			{ 
+			{ console.log("name: "+i.name);
 		      //send to the client.js script
 		      socket.emit('UPDATE_USER_LIST',i.id,i.name,i.publicAddress);
 			  
@@ -675,11 +675,9 @@ function gameloop() {
 setInterval(gameloop, 1000);
 // Adicionando a propriedade posY no array vehicleTypes
 const vehicleTypes = [
-  { name: 'desert vehicle patrol', model: 0, posY: 0},
-  { name: 'explorer 4X4', model: 1, posY: 0 },
-  { name: 'semi truck', model: 2, posY: -0.1 },
-  { name: 'motorcycle', model: 3, posY: -0.1 },
-  { name: 'policeinterceptor', model: 4, posY: -0.1 }
+  { name: 'motorcycle', model: 0},
+  { name: 'car', model: 1}
+
 ];
 
 function createVehicle(name, model, posX, posY, posZ) {
@@ -709,7 +707,7 @@ function createVehicle(name, model, posX, posY, posZ) {
 function generateRandomPosition(vehicleType) {
   return {
     x: (Math.random() * 100 - 50).toFixed(2), // Random X position between -50 and 50
-    y: vehicleType.posY, // Custom Y position based on vehicle type
+    y:0,
     z: (Math.random() * 100 - 50).toFixed(2) // Random Z position between -50 and 50
   };
 }
